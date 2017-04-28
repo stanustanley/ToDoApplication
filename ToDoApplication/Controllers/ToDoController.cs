@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -47,6 +48,33 @@ namespace ToDoApplication.Controllers
                 db.Tasks.Add(t);
                 db.SaveChanges();
             }
+        }
+        [HttpPut]
+        [Route("Change/{id}")]
+        public void Put(int id, Tasks task)
+        {
+            if (!task.Equals(null) && id.Equals(task.Id))
+            {
+                db.Entry(task).State = EntityState.Modified;
+                db.SaveChanges();
+
+            }
+        }
+
+        [HttpDelete]
+        [Route("Remove/{id}")]
+        public IHttpActionResult Delete(int id)
+        {
+            Tasks tasks = db.Tasks.Find(id);
+            if (tasks == null)
+            {
+                return NotFound();
+            }
+
+            db.Tasks.Remove(tasks);
+            db.SaveChanges();
+
+            return Ok(tasks);
         }
     }
 }
